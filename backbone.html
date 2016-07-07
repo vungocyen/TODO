@@ -1,0 +1,263 @@
+<html data-livestyle-extension="available">
+  <head>
+    <title>backbone</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+  <body>
+  <style type="text/css">
+  h1 {
+    text-align: center;
+  }
+    .todoapp {
+      width: 500px;
+      margin: 0 auto;
+    }
+    .toggle-all::before {
+    content: "❯";
+    font-size: 22px;
+    color: rgb(230, 230, 230);
+    padding: 10px 27px;
+   }
+   .toggle-all {
+        -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: -55px;
+    left: -15px;
+    width: 60px;
+    height: 34px;
+    text-align: center;
+    border: none;
+    outline: none;
+   }
+   .main {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #e6e6e6;
+    display: none;
+}
+   .new-todo {
+    padding: 16px 16px 16px 50px;
+    border: none;
+    background: rgba(0, 0, 0, 0.003);
+    box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-size: 24px;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: 1.4em;
+    border: 0;
+    outline: none;
+    color: inherit;
+    border: 1px solid #999;
+    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+.todo-list {
+    margin: 20px 0;
+    padding: 0;
+    list-style: none;
+  }
+.todo-list li {
+    position: relative;
+    font-size: 24px;
+    border-bottom: 1px solid #ededed;
+    padding: 5px 0;
+}
+.todo-list li:first-child {
+  border-top: 1px solid #ededed;
+}
+.destroy {
+  float: right;
+  opacity: 0;
+  margin-top: 5px;
+}
+.todo-list li.active .destroy{
+  opacity: 1;
+  transition: 0.3s ease-out;
+
+}
+.todo-list li label {
+    white-space: pre-line;
+    word-break: break-all;
+    padding: 0;
+    margin-left: 15px;
+    line-height: 1.2;
+    transition: color 0.4s;
+    margin-top: 30px;
+}
+  .footer{
+    display: none;
+  }
+  .filters {
+    list-style: none;
+    padding: 0;
+  }
+  .filters li {
+    display: inline;
+    margin: 5px;
+  }
+.edit {
+    position: absolute;
+    background: #fff;
+    top: 0;
+    width: 100%;
+    height:100%;
+    border: 1px solid #999;
+    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+  .slider {
+    width: 800px;
+    margin: 0 auto;
+  }
+  .list-slider {
+    list-style: none;
+  }
+  .list-slider li {
+    width: 100%;
+    display: none;
+  }
+  .list-slider li.active {
+    display: block;
+  }
+  .list-slider li img {
+    width: 100%;
+  }
+  </style>
+    <section class="todoapp">
+      <header class="header">
+        <h1>todos</h1>
+        <input class="new-todo" placeholder="What needs to be done?" autofocus="">
+      </header>
+      <section class="main">
+        <input class="toggle-all" id="toggle-all" type="checkbox">
+        <ul class="todo-list">
+        </ul>
+      </section>
+      <footer class="footer">
+      <span class="todo-count"></span>
+      <ul class="filters">
+        <li>
+          <a class="completed" href="#/completed">Completed</a>
+        </li>
+        <li>
+          <a class="all" href="#/all">all</a>
+        </li>
+      </ul>      
+      <button class="clear-completed">Clear completed</button>      
+    </footer>
+    </section>
+    <section class="slider">
+      <ul class="list-slider">
+        <li class="active"><img src="img/img-beauty1.png"></li>
+        <li><img src="img/img-beauty1.png"></li>
+        <li><img src="img/img-beauty1.png"></li>
+        <li><img src="img/img-beauty1.png"></li>
+      </ul>
+      <ol>
+        <li class="">1</li>
+        <li class="active">2</li>
+        <li class="">3</li>
+        <li class="">4</li>
+      </ol>
+      <ul class="list-next">
+        <li class="next">next</li>
+        <li class="prew">prew</li>
+      </ul>
+    </section>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function (){     
+        $(".new-todo").keyup(function(event){
+          var valueNew = $(this).val();
+          if(valueNew == null) {
+            $(".main").css("display", "none");
+            $(".footer").css("display", "none");
+          }
+          else {
+            if(event.keyCode == 13) {
+              $(".main").css("display", "block");
+              $(".footer").css("display", "block");      
+              $(".todo-list").append("<li><div class='view'><input class='toggle' type='checkbox'><label>"+valueNew+"</label><button class='destroy'></button></div></li>");
+              var sizeli = $(".todo-list li").size();
+              $(".todo-count").text(sizeli + ' items left');
+              $(this).val("");             
+              // document.getElementsByClassName("new-todo")[0].value = " ";
+
+            }
+          }
+        });
+        //hover show destroy
+
+        $(document).on('mouseover', '.todo-list > li',function(){
+          $(this).addClass("active");
+        });
+        $(document).on('mouseout', '.todo-list > li',function(){
+          $(this).removeClass("active");
+        });
+        //select all
+         $(document).on('change', '#toggle-all',function(){
+          $(this).toggleClass("active");
+          $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        //hide li when click in complete
+        $(document).on('click', '.completed',function(){
+          $(".todo-list li").hide();
+        });
+        //show li when click in all
+        $(document).on('click', '.all',function(){
+          $(".todo-list li").show();
+        });
+        //reomve li with input:checken 
+        $(document).on('click', '.clear-completed',function(){
+          $(".todo-list li").find("input:checked").closest('li').remove();
+          var sizeli = $(".todo-list li").size();
+          $(".todo-count").text(sizeli + ' items left');
+        });
+        // edit input
+        $(document).on('dblclick', '.view',function(){
+          var edittext = $(this).find("label").html();          
+          $(this).parent().addClass("editli");
+          $(this).parent().append("<input class='edit' value='"+edittext+"'></input>");
+        });
+        $(document).on('keyup', '.todo-list li .edit',function(event){ 
+          var changetext = $(this).val();
+          if(event.keyCode == 13) {
+            $(this).parent().find('label').text(changetext);
+            $(this).css("display", "none");
+          }
+        });
+        $(document).on('click', function (e) {
+          if (!$(e.target).closest($('.editli')).length) {
+            $('.editli').removeClass('editli');
+            $('input.edit').remove();
+          }
+        });
+        $(document).on('click', '.destroy',function(){ 
+          $(this).closest("li").remove();
+        });
+        
+        $('.ol li').click(function () {
+          var number = $(this).text();          
+          var images = $('.list-slider').find('li');
+          images.hide();
+          var target = $images[number];
+          target.show();
+        });
+
+        $('.next').click(function() {
+          var current = $('.list-slider li');
+          current.next().show();
+          current.hide();
+        });
+      });
+    </script>
+  </body>
+</html>
